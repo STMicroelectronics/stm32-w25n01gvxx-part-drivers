@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:stm32="https://developer.st.com/schemas/stm32cube/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.7.55" xsi:noNamespaceSchemaLocation="PACK.xsd" xsi:schemaLocation="https://developer.st.com/schemas/stm32cube/1.0.0 stm32cube.xsd">
+  <vendor>STMicroelectronics</vendor>
+  <name>w25n01gvxx_part_drivers</name>
+  <description>W25N01GVXX Part Drivers SW Pack</description>
+  <url>https://developer.st.com/st-pack-server/api/v1/pack/</url>
+  <repository type="git">https://github.com/STMicroelectronics/stm32-w25n01gvxx-part-drivers</repository>
+  <license>LICENSE.md</license>
+  <environments>
+    <environment name="STM32Cube">
+      <stm32:pack type="PARTDRV" friendlyName="w25n01gvxx" shortDesc="w25n01gvxx part driver">
+        <relocation-info parent="part_drivers" layer="" element=""/>
+      </stm32:pack>
+    </environment>
+  </environments>
+  <ECCN>
+    <ECCN-EU>NEC</ECCN-EU>
+    <ECCN-US>EAR99</ECCN-US>
+  </ECCN>
+  <changelogs>
+    <changelog id="Release Notes" name="Release_Notes.html"/>
+  </changelogs>
+  <releases>
+    <release version="2.0.0" date="2026-02-17">
+      Refer to Release_Notes.md for release details.
+    </release>
+  </releases>
+  <keywords>
+    <keyword>ST</keyword>
+    <keyword>STMicroelectronics Board Part Package</keyword>
+    <keyword>Parts</keyword>
+    <keyword>Drivers</keyword>
+    <keyword>W25N01GVXX</keyword>
+    <keyword>Flash</keyword>
+  </keywords>
+  <conditions>
+    <condition id="W25N01GVXX Core Condition">
+      <description>STMicroelectronics W25N01GVXX Core Driver</description>
+      <require Cclass="Device" Cgroup="STM32 HAL" Csub="SPI"/>
+    </condition>
+    <condition id="W25N01GVXX CFG Condition">
+      <description>STMicroelectronics configuration for W25N01GVXX part driver</description>
+    </condition>
+  </conditions>
+  <generators>
+    <generator id="w25n01gvxx_mx2codegen">
+      <description>STMicroelectronics: STM32 Cube Code Generator for W25N01GVXX Drivers Pack</description>
+      <exe>
+        <command host="win">.config/gen_code.bat</command>
+        <command host="linux">.config/gen_code.sh</command>
+        <command host="mac">.config/gen_code.sh</command>
+        <argument>w25n01gvxx_mx2codegen</argument>
+        <argument>$G</argument>
+        <argument>STMicroelectronics.w25n01gvxx_part_drivers.gpdsc.hbs</argument>
+        <argument mode="dry-run">--dry-run</argument>
+      </exe>
+      <gpdsc name="$P/STMicroelectronics.w25n01gvxx_part_drivers.gpdsc"/>
+    </generator>
+  </generators>
+  <components>
+    <component Cvendor="STMicroelectronics" Cclass="Board Part" Cgroup="Memory" Csub="W25N01GVXX Core" Cversion="1.0.0" condition="W25N01GVXX Core Condition">
+      <description>Driver for W25N01GVXX FLASH Memory</description>
+      <files>
+        <file category="doc" name="README.md"/>
+        <file category="doc" name="SW_Security_Level.md"/>
+        <file category="header" name="w25n01gvxx.h"/>
+        <file category="source" name="w25n01gvxx.c"/>
+      </files>
+    </component>
+    <component generator="w25n01gvxx_mx2codegen" Cclass="Board Part" Cgroup="STM32CubeMX2 Config" Csub="W25N01GVXX" Cversion="1.0.0" condition="W25N01GVXX CFG Condition" maxInstances="1">
+      <description>W25N01GVXX STM32CubeMX2 Config</description>
+      <environments>
+        <environment name="STM32Cube">
+        </environment>
+      </environments>
+      <files>
+        <file category="genAsset" name=".config/gen_code.bat"/>
+        <file category="genAsset" name=".config/gen_code.sh"/>
+        <file category="genAsset" name=".config/STMicroelectronics.w25n01gvxx_part_drivers.gpdsc.hbs"/>
+        <file category="genAsset" name=".config/template/mx_w25n01gvxx_template.h.hbs"/>
+        <file category="genAsset" name=".config/template/mx_w25n01gvxx_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_w25n01gvxx_part_drivers_license_template.md.hbs"/>
+        <file category="genAsset" name=".config/mx_w25n01gvxx_parameters.json"/>
+      </files>
+    </component>
+  </components>
+</package>
