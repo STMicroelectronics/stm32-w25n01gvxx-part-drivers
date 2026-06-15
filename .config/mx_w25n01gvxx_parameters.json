@@ -1,0 +1,109 @@
+{
+  "componentid": "::Board Part:STM32CubeMX2 Config:W25N01GVXX",
+  "type": "object",
+  "grammarVersion": "3.7.0",
+  "license": "Copyright (c) 2026 STMicroelectronics",
+  "properties": {
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "info": {
+          "title": "W25N01GVXX configuration",
+          "type": "object",
+          "properties": {
+            "labels": {
+              "type": "array",
+              "title": "SW Label for parts objects",
+              "description": "Labels allow to create aliases inside mx_w25n01gvxx.h file for the object ID and object getter function. These aliases can be used on application side.",
+              "items": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 32,
+                "unique": "project",
+                "default": "",
+                "actions": [
+                  {
+                    "type": "error",
+                    "condition": "!/^[A-Za-z_][A-Za-z0-9_]*$/.test($value)",
+                    "message": "Name must be a valid C identifier: start with a letter or underscore, and contain only letters, digits, or underscores."
+                  }
+                ]
+              }
+            },
+            "interface": {
+              "title": "Interface selection",
+              "description": "Select the Interface to be configured",
+              "type": "string",
+              "oneOf": [
+                {
+                  "const": "SPI",
+                  "title": "SPI"
+                }
+              ],
+              "default": "SPI"
+            }
+          }
+        },
+        "resourcesAllocation": {
+          "type": "object",
+          "properties": {
+            "spiCfg": {
+              "type": "object",
+              "title": "SPI Interface Configuration",
+              "description": "W25N01GVXX SPI Interface configuration",
+              "actions": [
+                {
+                  "type": "include",
+                  "condition": "$info.interface === 'SPI'"
+                }
+              ],
+              "properties": {
+                "spi_instance": {
+                  "type": "object",
+                  "title": "SPI Instance",
+                  "description": "The SPI peripheral must be configured in the HAL SPI configuration panel",
+                  "objectType": "bind.peripheral.config",
+                  "criteria": {
+                    "peripheralType": [
+                      "spi"
+                    ]
+                  },
+                  "actions": [
+                    {
+                      "type": "error",
+                      "condition": "!$resourcesAllocation.spiCfg.spi_instance?.selection",
+                      "message": "Please select an SPI instance configured in the Peripherals configuration panel."
+                    }
+                  ]
+                },
+                "cs_pin": {
+                  "title": "Chip Select Selection",
+                  "description": "The GPIO pin must be configured as an output in the HAL GPIO configuration panel",
+                  "type": "object",
+                  "objectType": "bind.gpio.config",
+                  "pins": {
+                    "gpiopin": {
+                      "title": "CS PIN",
+                      "constraints": {
+                        "mode": {
+                          "const": "output"
+                        }
+                      }
+                    }
+                  },
+                  "actions": [
+                    {
+                      "type": "error",
+                      "condition": "!$resourcesAllocation.spiCfg.cs_pin?.selection",
+                      "message": "Please select a GPIO pin configured as output in the HAL GPIO configuration panel."
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

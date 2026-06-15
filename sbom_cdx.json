@@ -1,15 +1,15 @@
 {
     "bomFormat": "CycloneDX",
     "specVersion": "1.5",
-    "serialNumber": "urn:uuid:3ce53819-ca2c-4f11-a6d8-742f0c2aa891",
+    "serialNumber": "urn:uuid:0d7eae9e-c570-4782-9085-ea8031e990de",
     "version": 1,
     "metadata": {
-        "timestamp": "2026-03-03T11:27:21Z",
+        "timestamp": "2026-04-30T14:46:50Z",
         "tools": [
             {
                 "vendor": "Black Duck",
                 "name": "Hub",
-                "version": "2025.10.0"
+                "version": "2026.1.1"
             },
             {
                 "vendor": "CycloneDX",
@@ -24,12 +24,12 @@
         ],
         "component": {
             "type": "application",
-            "bom-ref": "f7b8730e-b31b-41f3-a8fc-b11656fa2728",
+            "bom-ref": "dc6c63af-bac6-48c3-9fc2-601ca0b4dfb8",
             "supplier": {
-                "name": ""
+                "name": "Organization: w25n01gvxx_Part_Drivers"
             },
             "name": "w25n01gvxx_Part_Drivers",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "licenses": [
                 {
                     "license": {
@@ -47,7 +47,7 @@
                 },
                 {
                     "name": "BlackDuck-ComponentVersion",
-                    "value": "f7b8730e-b31b-41f3-a8fc-b11656fa2728"
+                    "value": "dc6c63af-bac6-48c3-9fc2-601ca0b4dfb8"
                 }
             ]
         }
@@ -55,9 +55,9 @@
     "components": [
         {
             "type": "library",
-            "bom-ref": "e32abc1d-246e-4245-af5f-eda99d0743d6",
+            "bom-ref": "dc6c63af-bac6-48c3-9fc2-601ca0b4dfb8---e32abc1d-246e-4245-af5f-eda99d0743d6",
             "supplier": {
-                "name": ""
+                "name": "Organization: w25n01gvxx_Part_Drivers"
             },
             "author": "STMicroelectronics",
             "name": "w25n01gvxx_Part_Drivers",
@@ -86,9 +86,9 @@
     ],
     "dependencies": [
         {
-            "ref": "f7b8730e-b31b-41f3-a8fc-b11656fa2728",
+            "ref": "dc6c63af-bac6-48c3-9fc2-601ca0b4dfb8",
             "dependsOn": [
-                "e32abc1d-246e-4245-af5f-eda99d0743d6"
+                "dc6c63af-bac6-48c3-9fc2-601ca0b4dfb8---e32abc1d-246e-4245-af5f-eda99d0743d6"
             ]
         }
     ]

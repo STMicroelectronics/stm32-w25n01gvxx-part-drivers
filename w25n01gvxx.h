@@ -31,7 +31,18 @@ extern "C" {
 #endif /* USE_HAL_SPI_REGISTER_CALLBACKS */
 #endif /* USE_HAL_SPI_USER_DATA */
 
+#if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+#define W25N01GVXX_ALIGNMENT_SIZE   __SCB_DCACHE_LINE_SIZE
+#else
+#define W25N01GVXX_ALIGNMENT_SIZE   4U
+#endif /* __DCACHE_PRESENT */
+
+
+#define W25N01GVXX_WRITE_PAGE_MAX_WAIT    5000U        /*!< write page timeout (5s) */
+
 #define W25N01GVXX_SPI_POLL_TIMEOUT    1000U           /*!< Default SPI timeout (1s) */
+
+#define W25N01GVXX_CS_MAX_CHECK_COUNT    20U        /*!< max wait count for CS GPIO switching */
 
 #define W25N01GVXX_CS_PIN_SET       HAL_GPIO_PIN_SET   /*!< Select the W25N01GVXX memory   */
 #define W25N01GVXX_CS_PIN_RESET     HAL_GPIO_PIN_RESET /*!< Deselect the W25N01GVXX memory */
@@ -47,7 +58,7 @@ extern "C" {
 #define W25N01GVXX_NUM_PAGE_PER_BLOCK                   64U       /*!< Number of pages per block => 64 pages      */
 #define W25N01GVXX_NUM_SPARE_SECTOR_IN_PAGE             4U        /*! < Number of spare columns per page          */
 #define W25N01GVXX_SPARE_SECTOR_SIZE                    16U       /*! < Size of each spare column                 */
-#define W25N01GVXX_NUM_OF_SECTOR_IN_PAGE                4U        /*!< Each page contain 4 sectors                */
+#define W25N01GVXX_NUM_OF_SECTOR_IN_PAGE                4U        /*!< Each page contains 4 sectors               */
 #define W25N01GVXX_SECTOR_SIZE                          512U      /*!< Sector size is 512-Byte                    */
 
 /*!< Total number of pages => 65536         */
@@ -68,8 +79,8 @@ extern "C" {
 /*!< Spare area user data section properties */
 #define W25N01GVXX_SPARE_USER_DATA1_OFFSET              4U        /*!< User data 1 offset from spare area start   */
 #define W25N01GVXX_SPARE_USER_DATA1_SIZE                4U        /*!< Size of the User data 1 section (4 bytes)  */
-#define W25N01GVXX_SPARE_USER_DATA2_OFFSET              2U        /*!< User data 21 offset from spare area start  */
-#define W25N01GVXX_SPARE_USER_DATA2_SIZE                2U        /*!< Size of the User data 2 section (4 bytes)  */
+#define W25N01GVXX_SPARE_USER_DATA2_OFFSET              2U        /*!< User data 2 offset from spare area start   */
+#define W25N01GVXX_SPARE_USER_DATA2_SIZE                2U        /*!< Size of the User data 2 section (2 bytes)  */
 
 
 /***** Error Codes ***************************************************************************/
@@ -116,7 +127,7 @@ typedef enum
 #define W25N01GVXX_CMD_FAST_READ_DUAL_IO                0xBBU       /*!< Fast Read Dual I/O                          */
 #define W25N01GVXX_CMD_FAST_READ_IO_4BYTE_ADDR          0xBCU       /*!< Fast Read Dual I/O with 4-Byte Address      */
 #define W25N01GVXX_CMD_FAST_READ_QUAD_IO                0xEBU       /*!< Fast Read Quad I/O                          */
-#define W25N01GVXX_CMD_FAST_READ_QUAD_IO_4BYTE_ADDDR    0xECU       /*!< Fast Read Quad I/O with 4-Byte Address      */
+#define W25N01GVXX_CMD_FAST_READ_QUAD_IO_4BYTE_ADDR     0xECU       /*!< Fast Read Quad I/O with 4-Byte Address      */
 
 
 /****** W25N01GVXX Registers ********************************************************************/
@@ -126,7 +137,8 @@ typedef enum
 #define W25N01GVXX_REG_STATUS_3                         0xC0U       /*!< Status Only Register                        */
 
 /* Protection Register -------------------------------*/
-
+#define W25N01GVXX_RS1_BP_BITS_MASK                     0x78U       /*!< Block Protect bits mask                     */
+#define W25N01GVXX_RS1_TB_BIT_MASK                      0x04U       /*!< TB bit mask (bit 2)                         */
 #define W25N01GVXX_RS1_WRITE_PROTECTION_ENABLE          0x02U       /*!< WP Enable                                   */
 #define W25N01GVXX_RS1_SRP1_ENABLE                      0x01U       /*!< Status Register Protect 1 enable            */
 #define W25N01GVXX_RS1_SRP0_ENABLE                      0x80U       /*!< Status Register Protect 0 enable            */
@@ -151,7 +163,7 @@ typedef enum
 
 
 #define W25N01GVXX_RS2_BUFFERED_READ_MODE               0x08U      /*!< Buffer Read Mode                             */
-#define W25N01GVXX_RS2_PAGE_CONTINOUS_READ_MODE         0x00U      /*!< Continuous Read Mode Bit                     */
+#define W25N01GVXX_RS2_PAGE_CONTINUOUS_READ_MODE        0x00U      /*!< Continuous Read Mode Bit                     */
 #define W25N01GVXX_RS2_ECC_ENABLED                      0x10U      /*!< ECC Enable Bit (ECC-E)                       */
 #define W25N01GVXX_RS2_OTP_LOCK                         0x80U      /*!< One Time Program Lock Bit (OTP-L)            */
 #define W25N01GVXX_RS2_OTP_ACCESS                       0x40U      /*!< Enter OTP Access Mode Bit (OTP-E)            */
@@ -188,6 +200,29 @@ typedef enum
 
 /****** Exported Types *********************************************************************/
 
+/** Enumeration defining block protection volatile values (minimum protection: 2 blocks). */
+typedef enum
+{
+  W25N01GVXX_BP_NONE         = 0x00U,         /*!< [BP0-BP3] = 0  - Block protection is disabled         */
+  W25N01GVXX_BP_2_BLOCKS     = 0x08U,         /*!< [BP0-BP3] = 1  - 2 blocks are protected               */
+  W25N01GVXX_BP_4_BLOCKS     = 0x10U,         /*!< [BP0-BP3] = 2  - 4 blocks are protected               */
+  W25N01GVXX_BP_8_BLOCKS     = 0x18U,         /*!< [BP0-BP3] = 3  - 8 blocks are protected               */
+  W25N01GVXX_BP_16_BLOCKS    = 0x20U,         /*!< [BP0-BP3] = 4  - 16 blocks are protected              */
+  W25N01GVXX_BP_32_BLOCKS    = 0x28U,         /*!< [BP0-BP3] = 5  - 32 blocks are protected              */
+  W25N01GVXX_BP_64_BLOCKS    = 0x30U,         /*!< [BP0-BP3] = 6  - 64 blocks are protected              */
+  W25N01GVXX_BP_128_BLOCKS   = 0x38U,         /*!< [BP0-BP3] = 7  - 128 blocks are protected             */
+  W25N01GVXX_BP_256_BLOCKS   = 0x40U,         /*!< [BP0-BP3] = 8  - 256 blocks are protected             */
+  W25N01GVXX_BP_512_BLOCKS   = 0x48U,         /*!< [BP0-BP3] = 9  - 512 blocks are protected             */
+  W25N01GVXX_BP_ALL_BLOCKS   = 0x50U          /*!< [BP0-BP3] = (10,11) - All blocks are protected        */
+} w25n01gvxx_bp_cfg;
+
+/** Enumeration defining the Top/Bottom volatile bit possible values. */
+typedef enum
+{
+  W25N01GVXX_BP_TB_TOP      = 0U,         /*!< TB = 0 - Top area protect     */
+  W25N01GVXX_BP_TB_BOTTOM   = 1U          /*!< TB = 1 - Bottom area protect  */
+} w25n01gvxx_bp_tb_cfg_t;
+
 /** Enumeration defining the Read Mode of the W25N01GVXX.  */
 typedef enum
 {
@@ -206,7 +241,7 @@ typedef enum
 typedef enum
 {
   W25N01GVXX_INIT_NONE = 0,                 /*!<  Instance is not initialized      */
-  W25N01GVXX_INIT_OK                        /*!<  Instance is initialized                    */
+  W25N01GVXX_INIT_OK                        /*!<  Instance is initialized          */
 } w25n01gvxx_init_state_t;
 
 
@@ -223,7 +258,7 @@ typedef struct
   uint8_t               sectors_per_page;           /*!< Number of sectors per page                    */
   uint8_t               spare_area_size;            /*!< Size of spare Area per page                   */
   uint8_t               spare_sectors;              /*!< Number of spare sectors per page              */
-  uint8_t               spare_sector_size;          /*!< Size of spare sector                         */
+  uint8_t               spare_sector_size;          /*!< Size of spare sector                          */
 } w25n01gvxx_info_t;
 
 typedef struct w25n01gvxx_obj_s w25n01gvxx_obj_t;
@@ -239,16 +274,27 @@ typedef struct
 
 typedef enum
 {
-  W25N01GVXX_ASYNC_WRITE_IDLE = 0,      /*!<  Idle state - No ongoing transfer                                 */
+  W25N01GVXX_ASYNC_WRITE_IDLE = 0,      /*!< Idle state - No ongoing transfer                                  */
   W25N01GVXX_ASYNC_WEL,                 /*!< Send the write enable cmd -  step 1                               */
   W25N01GVXX_ASYNC_LOAD_CMD,            /*!< Send the load buffer cmd  -  step 2                               */
   W25N01GVXX_ASYNC_LOAD_BUF,            /*!< Load the buffer with data -  step 3                               */
-  W25N01GVXX_ASYNC_EXEC_LOAD            /*!< Write the data from the buffer to the physical memory -  step 4   */
+  W25N01GVXX_ASYNC_EXEC_LOAD,           /*!< Write the data from the buffer to the physical memory -  step 4   */
+  W25N01GVXX_ASYNC_WAIT_READY,          /*!< Wait the BUSY flag to be reset - step 5 in non blocking mode      */
+  W25N01GVXX_ASYNC_READY                /*!< Memory is in a ready state for the next transfer to start         */
 } w25n01gvxx_async_write_phase_t;
 
 typedef enum
 {
+  W25N01GVXX_ASYNC_EXEC_NONBLOCKING = 0, /*!< Non-blocking async execution mode                               */
+  W25N01GVXX_ASYNC_EXEC_BLOCKING,        /*!< Blocking async execution mode                                   */
+  W25N01GVXX_ASYNC_EXEC_PAGE             /*!< Single page write - wait states handled by the user application */
+} w25n01gvxx_async_exec_mode_t;
+
+typedef enum
+{
   W25N01GVXX_ASYNC_READ_IDLE = 0,        /*!<  Idle state - No ongoing transfer */
+  W25N01GVXX_ASYNC_READ_LOAD_BUF,        /*!<  Sending load buffer command      */
+  W25N01GVXX_ASYNC_READ_CMD,             /*!<  Sending read command             */
   W25N01GVXX_ASYNC_READING               /*!<  Read transfer ongoing            */
 } w25n01gvxx_async_read_phase_t;
 
@@ -257,6 +303,30 @@ typedef enum
   W25N01GVXX_ASYNC_SPARE_TRANSFER_IDLE = 0, /*!<  Idle state - No ongoing transfer */
   W25N01GVXX_ASYNC_SPARE_TRANSFER_ONGOING   /*!<  Spare area transfer ongoing      */
 } w25n01gvxx_spare_area_transfer_t;
+
+typedef struct
+{
+  volatile uint32_t                  inhibit_callbacks;          /*!< Used for multi-pages writes                    */
+  w25n01gvxx_async_read_phase_t      rd_phase;                   /*!< Async read phase                               */
+  w25n01gvxx_async_write_phase_t     wr_phase;                   /*!< Async write phase                              */
+  w25n01gvxx_spare_area_transfer_t   spare_phase;                /*!< Async Spare area read/write tracker            */
+  uint8_t                            current_page;               /*!< Current write page          - async writes     */
+  uint16_t                           current_block;              /*!< Current write block         - async writes     */
+  uint8_t                            *p_buff;                    /*!< Pointer to the write buffer - async writes     */
+  uint32_t                           size_byte;                  /*!< Total write data size       - async writes     */
+  uint16_t                           column_addr;                /*!< Start column address        - async writes     */
+  uint32_t                           nb_transfer;                /*!< Number of pages to write    - async writes     */
+  uint8_t                            *pending_transfer_ptr;      /*!< Next transfer pointer for split IT/DMA flow    */
+  uint16_t                           pending_transfer_len;       /*!< Next transfer length for split IT/DMA flow     */
+  uint8_t                            *pending_transfer_tail_ptr; /*!< Tail transfer pointer for split IT/DMA/IT flow */
+  uint16_t                           pending_transfer_tail_len;  /*!< Tail transfer length for split IT/DMA/IT flow  */
+#if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+  uint8_t                            *pending_rx_body_ptr;       /*!< RX body pointer for cache invalidate           */
+  uint16_t                           pending_rx_body_len;        /*!< RX body length for cache invalidate            */
+#endif /* __DCACHE_PRESENT */
+  uint8_t                            cmd_buf[4U];                /*!< Buffer for cmds with async transfers           */
+  w25n01gvxx_async_exec_mode_t       async_exec_mode;            /*!< Async execution mode                           */
+} w25n01gvxx_async_transfer_context_t;
 
 #endif /* W25N01GVXX_CALLBACKS */
 
@@ -275,20 +345,11 @@ struct w25n01gvxx_obj_s
   w25n01gvxx_io_t           io;                   /*!< IO interface                               */
   w25n01gvxx_read_mode      read_mode;            /*!< Memory Read Mode                           */
 #if defined (W25N01GVXX_CALLBACKS) && (W25N01GVXX_CALLBACKS == 1)
-  volatile uint32_t inhibit_callbacks;            /*!< Used for multi-pages writes                */
-  w25n01gvxx_callback_ctx_t          rd_cb_ctx;       /*!< Read  complete: Callback data              */
-  w25n01gvxx_callback_ctx_t          wr_cb_ctx;       /*!< Write complete: Callback data              */
-  w25n01gvxx_callback_ctx_t          spare_rd_cb_ctx; /*!< Spare area read complete: Callback data    */
-  w25n01gvxx_callback_ctx_t          spare_wr_cb_ctx; /*!< Spare area write complete: Callback data   */
-  w25n01gvxx_async_read_phase_t      rd_phase;        /*!< Async write phase                          */
-  w25n01gvxx_async_write_phase_t     wr_phase;        /*!< Async read phase                           */
-  w25n01gvxx_spare_area_transfer_t   spare_phase;     /*!< Async Spare area read/write tracker        */
-  uint8_t                            current_page;    /*!< Current write page          - async writes */
-  uint16_t                           current_block;   /*!< Current write block         - async writes */
-  uint8_t                            *p_buff;         /*!< Pointer to the write buffer - async writes */
-  uint32_t                           size_byte;       /*!< Total write data size       - async writes */
-  uint16_t                           column_addr;     /*!< Start column address        - async writes */
-  uint32_t                           nb_transfer;     /*!< Number of pages to write    - async writes */
+  w25n01gvxx_async_transfer_context_t async_context;     /*!< Async state machine transfer context       */
+  w25n01gvxx_callback_ctx_t          rd_cb_ctx;          /*!< Read  complete: Callback data              */
+  w25n01gvxx_callback_ctx_t          wr_cb_ctx;          /*!< Write complete: Callback data              */
+  w25n01gvxx_callback_ctx_t          spare_rd_cb_ctx;    /*!< Spare area read complete: Callback data    */
+  w25n01gvxx_callback_ctx_t          spare_wr_cb_ctx;    /*!< Spare area write complete: Callback data   */
 #endif /* W25N01GVXX_CALLBACKS */
 };
 
@@ -345,19 +406,31 @@ w25n01gvxx_status_t w25n01gvxx_write_spare_area(w25n01gvxx_obj_t *pobj, uint16_t
 w25n01gvxx_status_t w25n01gvxx_erase_blocks(w25n01gvxx_obj_t *pobj, uint16_t start_block, uint16_t num_blocks);
 w25n01gvxx_status_t w25n01gvxx_full_chip_erase(w25n01gvxx_obj_t *pobj);
 
-/* Async Read/Write page Commands (DMA)------------*/
+/* Memory block protection functions --------------*/
+w25n01gvxx_status_t w25n01gvxx_set_block_protection(w25n01gvxx_obj_t *pobj, w25n01gvxx_bp_cfg bp_cfg);
+w25n01gvxx_status_t w25n01gvxx_get_block_protection(w25n01gvxx_obj_t *pobj, w25n01gvxx_bp_cfg *bp_cfg);
+w25n01gvxx_status_t w25n01gvxx_set_top_bottom_cfg(w25n01gvxx_obj_t *pobj, w25n01gvxx_bp_tb_cfg_t tb_cfg);
+w25n01gvxx_status_t w25n01gvxx_get_top_bottom_cfg(w25n01gvxx_obj_t *pobj, w25n01gvxx_bp_tb_cfg_t *p_tb_cfg);
+
+/* Wait state management ------------------------  */
+w25n01gvxx_status_t w25n01gvxx_wait_ready(w25n01gvxx_obj_t *pobj);
+
+/* Async Read/Write functions ----------------*/
 #if defined (USE_HAL_SPI_DMA) && (USE_HAL_SPI_DMA == 1)
-/* Async Read/Write functions */
-w25n01gvxx_status_t w25n01gvxx_read_dma(w25n01gvxx_obj_t *pobj, uint16_t block, uint8_t page, uint8_t *p_buff,
-                                        uint32_t size_byte);
-#endif /* USE_HAL_SPI_DMA */
 #if defined (W25N01GVXX_CALLBACKS) && (W25N01GVXX_CALLBACKS == 1)
 w25n01gvxx_status_t w25n01gvxx_read_spare_area_dma(w25n01gvxx_obj_t *pobj, uint16_t block, uint8_t page,
                                                    uint8_t sector, uint8_t *p_buff);
 w25n01gvxx_status_t w25n01gvxx_write_spare_area_dma(w25n01gvxx_obj_t *pobj, uint16_t block, uint8_t page,
                                                     uint8_t sector, uint8_t *p_buff);
+w25n01gvxx_status_t w25n01gvxx_read_dma(w25n01gvxx_obj_t *pobj, uint16_t block, uint8_t page, uint8_t *p_buff,
+                                        uint32_t size_byte);
 w25n01gvxx_status_t w25n01gvxx_write_dma(w25n01gvxx_obj_t *pobj, uint16_t block, uint8_t page, uint8_t *p_buff,
                                          uint32_t size_byte);
+w25n01gvxx_status_t w25n01gvxx_write_page_dma(w25n01gvxx_obj_t *pobj, uint16_t block, uint8_t page, uint8_t *p_buff,
+                                              uint32_t size_byte);
+w25n01gvxx_status_t w25n01gvxx_exec_data_handler(w25n01gvxx_obj_t *pobj);
+w25n01gvxx_status_t w25n01gvxx_write_dma_async(w25n01gvxx_obj_t *pobj, uint16_t block, uint8_t page, uint8_t *p_buff,
+                                               uint32_t size_byte);
 /* Callback register functions */
 w25n01gvxx_status_t w25n01gvxx_register_read_cplt_callback(w25n01gvxx_obj_t *pobj, w25n01gvxx_callback_t cb,
                                                            void *arg);
@@ -371,6 +444,7 @@ w25n01gvxx_status_t w25n01gvxx_register_spare_write_cplt_callback(w25n01gvxx_obj
 w25n01gvxx_async_write_phase_t w25n01gvxx_get_async_write_phase(w25n01gvxx_obj_t *pobj);
 w25n01gvxx_async_read_phase_t w25n01gvxx_get_async_read_phase(w25n01gvxx_obj_t *pobj);
 #endif /* W25N01GVXX_CALLBACKS */
+#endif /* USE_HAL_SPI_DMA */
 
 #ifdef __cplusplus
 }

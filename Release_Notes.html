@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>Release_Notes</title>
   <style>
-
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -1519,14 +1518,20 @@ Part Drivers online documentation</a>.</p>
 <section id="update-history" class="col-sm-12 col-lg-8">
 <h1>Update history</h1>
 <div class="collapse">
-<input type="checkbox" id="collapse-v-2-0-0" checked aria-hidden="true">
-<label for="collapse-v-2-0-0" aria-hidden="true"><strong>2.0.0 /
-13-March-2026</strong></label>
+<input type="checkbox" id="collapse-v-2-1-0" checked aria-hidden="true">
+<label for="collapse-v-2-1-0" aria-hidden="true"><strong>2.1.0 /
+12-June-2026</strong></label>
 <div>
 <h2 id="main-changes">Main changes</h2>
-<p>First official release of W25N01GVXX Part Drivers.</p>
+<p>Second official release of W25N01GVXX Part Drivers.</p>
 <h2 id="contents">Contents</h2>
-<p>W25N01GVXX Part Drivers.</p>
+<ul>
+<li>Miscellaneous update of .config files.</li>
+<li>Add cache and buffers alignment management for data read and write
+operations in DMA mode.</li>
+<li>Add new APIs to support full multipage DMA transfers and safe status
+check of memory readiness.</li>
+</ul>
 <h2 id="known-limitations">Known limitations</h2>
 <p>None.</p>
 <h2 id="development-toolchains-and-compilers">Development toolchains and
@@ -1542,6 +1547,34 @@ ST-LINK.</li>
 <h2 id="backward-compatibility">Backward compatibility</h2>
 <p>None.</p>
 <h2 id="dependencies">Dependencies</h2>
+<p>STM32C5xx HAL Drivers V2.0.0.</p>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-v-2-0-0" checked aria-hidden="true">
+<label for="collapse-v-2-0-0" aria-hidden="true"><strong>2.0.0 /
+13-March-2026</strong></label>
+<div>
+<h2 id="main-changes-1">Main changes</h2>
+<p>First official release of W25N01GVXX Part Drivers.</p>
+<h2 id="contents-1">Contents</h2>
+<p>W25N01GVXX Part Drivers.</p>
+<h2 id="known-limitations-1">Known limitations</h2>
+<p>None.</p>
+<h2 id="development-toolchains-and-compilers-1">Development toolchains
+and compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V9.60.3 +
+ST-LINK.</li>
+<li>MDK-ARM Keil uVision V5.42.</li>
+<li>STM32CubeIDE for Visual Studio Code (GCC13 compiler).</li>
+</ul>
+<h2 id="supported-devices-and-boards-1">Supported devices and
+boards</h2>
+<p>NUCLEO-C562RE, NUCLEO-C542RC, NUCLEO-C5A3ZG boards.</p>
+<h2 id="backward-compatibility-1">Backward compatibility</h2>
+<p>None.</p>
+<h2 id="dependencies-1">Dependencies</h2>
 <p>STM32C5xx HAL Drivers V2.0.0.</p>
 </div>
 </div>

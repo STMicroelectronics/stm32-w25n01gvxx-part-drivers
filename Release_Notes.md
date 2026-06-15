@@ -9,6 +9,45 @@ More detailed documentation is available at [W25N01GVXX Part Drivers online docu
 
 # Update history
 
+<label for="collapse-v-2-1-0" aria-hidden="true">**2.1.0 / 12-June-2026**</label>
+<div>
+
+
+## Main changes
+
+Second official release of W25N01GVXX Part Drivers.
+
+## Contents
+
+- Miscellaneous update of .config files.
+- Add cache and buffers alignment management for data read and write operations in DMA mode.
+- Add new APIs to support full multipage DMA transfers and safe status check of memory readiness.
+
+## Known limitations
+
+None.
+
+## Development toolchains and compilers
+
+- IAR Embedded Workbench for ARM (EWARM) toolchain V9.60.3 + ST-LINK.
+- MDK-ARM Keil uVision V5.42.
+- STM32CubeIDE for Visual Studio Code (GCC13 compiler).
+
+## Supported devices and boards
+
+NUCLEO-C562RE, NUCLEO-C542RC, NUCLEO-C5A3ZG boards.
+
+## Backward compatibility
+
+None.
+
+## Dependencies
+
+STM32C5xx HAL Drivers V2.0.0.
+
+</div>
+
+
 <label for="collapse-v-2-0-0" aria-hidden="true">**2.0.0 / 13-March-2026**</label>
 <div>
 
@@ -45,11 +84,9 @@ STM32C5xx HAL Drivers V2.0.0.
 </div>
 
 
-<footer class="sticky">
 For complete documentation on STM32 Microcontrollers </mark> ,
 visit: http://www.st.com/stm32
 
 This release note uses up to date web standards and, for this reason, should not
 be opened with Internet Explorer but preferably with popular browsers such as
 Google Chrome, Mozilla Firefox, Opera or Microsoft Edge.
-</footer>
