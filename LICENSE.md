@@ -22,6 +22,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <!-- Copyrights statements for [w25n01gvxx_Part_Drivers] [BSD-3-Clause] -->
 Copyrights statements for [w25n01gvxx_Part_Drivers]
 
+	Copyright (c) 2026 STMicroelectronics",
+
 	Copyright (c) 2026 STMicroelectronics.
 
 <!-- End of Copyrights statements for [w25n01gvxx_Part_Drivers] -->

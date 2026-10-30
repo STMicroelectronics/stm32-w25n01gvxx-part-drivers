@@ -11,6 +11,13 @@
       <stm32:pack type="PARTDRV" friendlyName="w25n01gvxx" shortDesc="w25n01gvxx part driver">
         <relocation-info parent="part_drivers" layer="" element=""/>
         <compatibility>
+          <release version="2.2.0">
+            <applicable-schema schemaType="sw-configuration" schemaVersion="3.8.0"/>
+            <applicable-api-group apiType="codegen-getters">
+              <applicable-api apiType="pinoutAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="SWConfigurationAPI" apiVersion="1.0.0"/>
+            </applicable-api-group>
+          </release>
           <release version="2.1.0">
             <applicable-schema schemaType="sw-configuration" schemaVersion="3.7.0"/>
             <applicable-api-group apiType="codegen-getters">
@@ -37,6 +44,9 @@
     <changelog id="Release Notes" name="Release_Notes.html"/>
   </changelogs>
   <releases>
+    <release version="2.2.0" date="2026-08-24">
+      Refer to Release_Notes.md for release details.
+    </release>
     <release version="2.1.0" date="2026-04-30">
       Refer to Release_Notes.md for release details.
     </release>
@@ -77,7 +87,7 @@
     </generator>
   </generators>
   <components>
-    <component Cvendor="STMicroelectronics" Cclass="Board Part" Cgroup="Memory" Csub="W25N01GVXX Core" Cversion="1.1.0" condition="W25N01GVXX Core Condition">
+    <component Cvendor="STMicroelectronics" Cclass="Board Part" Cgroup="Memory" Csub="W25N01GVXX Core" Cversion="1.2.0" condition="W25N01GVXX Core Condition">
       <description>Driver for W25N01GVXX FLASH Memory</description>
       <files>
         <file category="doc" name="README.md"/>

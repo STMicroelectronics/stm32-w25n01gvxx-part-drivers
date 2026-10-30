@@ -2353,35 +2353,44 @@ static void spi_rd_cplt_cb(hal_spi_handle_t *phspi)
   */
 w25n01gvxx_status_t w25n01gvxx_exec_data_handler(w25n01gvxx_obj_t *pobj)
 {
-  w25n01gvxx_status_t ret = W25N01GVXX_OK;
   switch (pobj->async_context.wr_phase)
   {
     case W25N01GVXX_ASYNC_WAIT_READY:
     {
-      uint32_t tstart = HAL_GetTick();
+      uint32_t tstart = pobj->async_context.tstart;
       uint8_t status_reg = 0U;
-      do
+      if (w25n01gvxx_read_status_register(pobj, &status_reg) != W25N01GVXX_OK)
       {
-        w25n01gvxx_read_status_register(pobj, &status_reg);
-      } while (((HAL_GetTick() - tstart) < W25N01GVXX_WRITE_PAGE_MAX_WAIT)
-               && ((status_reg & W25N01GVXX_RS3_S0_BUSY) == W25N01GVXX_RS3_S0_BUSY));
+        return W25N01GVXX_ERROR;
+      }
       if ((status_reg & W25N01GVXX_RS3_S0_BUSY) != W25N01GVXX_RS3_S0_BUSY)
       {
         /* Memory is ready - update the wr_phase */
         pobj->async_context.wr_phase = W25N01GVXX_ASYNC_READY;
+        /* Start next page transfer/clean-up */
         w25n01gvxx_write_nextpage(pobj);
+        return W25N01GVXX_BUSY;
+      }
+      if ((HAL_GetTick() - tstart) > W25N01GVXX_WRITE_PAGE_MAX_WAIT)
+      {
+        /* Timeout error */
+        return W25N01GVXX_ERROR;
       }
       else
       {
-        /* timeout */
-        ret = W25N01GVXX_ERROR;
+        /* Memory is not ready yet */
+        return W25N01GVXX_BUSY;
       }
       break;
     }
+    case W25N01GVXX_ASYNC_WRITE_IDLE:
+      /* tx transfer finished */
+      return W25N01GVXX_OK;
+      break;
     default: /* all other states: no operation to do */
       break;
   }
-  return ret;
+  return W25N01GVXX_BUSY;
 }
 
 /**
@@ -2452,7 +2461,9 @@ static void w25n01gvxx_async_wait_ready(w25n01gvxx_obj_t *pobj)
   }
   else
   {
+    pobj->async_context.tstart = HAL_GetTick();
     pobj->async_context.wr_phase = W25N01GVXX_ASYNC_WAIT_READY;
+
   }
 }
 

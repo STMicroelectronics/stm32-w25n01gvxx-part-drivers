@@ -325,6 +325,7 @@ typedef struct
   uint16_t                           pending_rx_body_len;        /*!< RX body length for cache invalidate            */
 #endif /* __DCACHE_PRESENT */
   uint8_t                            cmd_buf[4U];                /*!< Buffer for cmds with async transfers           */
+  uint32_t                           tstart;                     /*!< Tick tracker - used for busy state timeout     */
   w25n01gvxx_async_exec_mode_t       async_exec_mode;            /*!< Async execution mode                           */
 } w25n01gvxx_async_transfer_context_t;
 

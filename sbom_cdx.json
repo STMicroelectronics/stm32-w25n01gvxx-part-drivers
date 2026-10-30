@@ -1,15 +1,15 @@
 {
     "bomFormat": "CycloneDX",
     "specVersion": "1.5",
-    "serialNumber": "urn:uuid:0d7eae9e-c570-4782-9085-ea8031e990de",
+    "serialNumber": "urn:uuid:9d2832da-0ac0-4a49-b15a-cf6c8da9746a",
     "version": 1,
     "metadata": {
-        "timestamp": "2026-04-30T14:46:50Z",
+        "timestamp": "2026-08-24T12:54:57Z",
         "tools": [
             {
                 "vendor": "Black Duck",
                 "name": "Hub",
-                "version": "2026.1.1"
+                "version": "2026.7.0"
             },
             {
                 "vendor": "CycloneDX",
@@ -24,12 +24,9 @@
         ],
         "component": {
             "type": "application",
-            "bom-ref": "dc6c63af-bac6-48c3-9fc2-601ca0b4dfb8",
-            "supplier": {
-                "name": "Organization: w25n01gvxx_Part_Drivers"
-            },
+            "bom-ref": "a9dd90fe-7535-44b8-984c-7aa25a723e8d",
             "name": "w25n01gvxx_Part_Drivers",
-            "version": "2.1.0",
+            "version": "2.2.0",
             "licenses": [
                 {
                     "license": {
@@ -47,21 +44,21 @@
                 },
                 {
                     "name": "BlackDuck-ComponentVersion",
-                    "value": "dc6c63af-bac6-48c3-9fc2-601ca0b4dfb8"
+                    "value": "a9dd90fe-7535-44b8-984c-7aa25a723e8d"
                 }
             ]
+        },
+        "supplier": {
+            "name": "STMicroelectronics NV"
         }
     },
     "components": [
         {
             "type": "library",
-            "bom-ref": "dc6c63af-bac6-48c3-9fc2-601ca0b4dfb8---e32abc1d-246e-4245-af5f-eda99d0743d6",
-            "supplier": {
-                "name": "Organization: w25n01gvxx_Part_Drivers"
-            },
+            "bom-ref": "a9dd90fe-7535-44b8-984c-7aa25a723e8d---686b0a78-eb26-4ecd-bf4f-4bfaa1d1d98a",
             "author": "STMicroelectronics",
             "name": "w25n01gvxx_Part_Drivers",
-            "version": "0.7.0",
+            "version": "2.2.0",
             "licenses": [
                 {
                     "license": {
@@ -79,16 +76,16 @@
                 },
                 {
                     "name": "BlackDuck-ComponentVersion",
-                    "value": "e32abc1d-246e-4245-af5f-eda99d0743d6"
+                    "value": "686b0a78-eb26-4ecd-bf4f-4bfaa1d1d98a"
                 }
             ]
         }
     ],
     "dependencies": [
         {
-            "ref": "dc6c63af-bac6-48c3-9fc2-601ca0b4dfb8",
+            "ref": "a9dd90fe-7535-44b8-984c-7aa25a723e8d",
             "dependsOn": [
-                "dc6c63af-bac6-48c3-9fc2-601ca0b4dfb8---e32abc1d-246e-4245-af5f-eda99d0743d6"
+                "a9dd90fe-7535-44b8-984c-7aa25a723e8d---686b0a78-eb26-4ecd-bf4f-4bfaa1d1d98a"
             ]
         }
     ]

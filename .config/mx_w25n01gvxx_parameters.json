@@ -1,7 +1,7 @@
 {
   "componentid": "::Board Part:STM32CubeMX2 Config:W25N01GVXX",
   "type": "object",
-  "grammarVersion": "3.7.0",
+  "grammarVersion": "3.8.0",
   "license": "Copyright (c) 2026 STMicroelectronics",
   "properties": {
     "parameters": {

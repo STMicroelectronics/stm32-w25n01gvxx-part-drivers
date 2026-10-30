@@ -5,9 +5,45 @@
 STM32Cube enables developers to achieve design success. With a comprehensive suite of professional development tools and embedded software components, STM32Cube allows developers to differentiate products, streamline design cycles, and reduce costs. STM32Cube ecosystem supports all design steps, including selection, configuration, development, debugging, programming, and monitoring.
 The STM32Cube embedded software offer provides ready-to-use software components that can be added to a project. It includes STM32 peripheral driver APIs with two levels of abstraction, middleware, board drivers, and examples. There are several distribution channels, including the STM32CubeMX2 tool, the ST website, and GitHub. All embedded software comes with enhanced online documentation, with flowcharts and user sequences.
 
-More detailed documentation is available at [W25N01GVXX Part Drivers online documentation]( https://dev.st.com/stm32cube-docs/part-driver-w25n01gvxx/latest/en/index.html).
+More detailed documentation is available at [W25N01GVXX Part Drivers online documentation]( https://dev.st.com/stm32cube-docs/part-drivers-w25n01gvxx/latest/en/index.html).
 
 # Update history
+
+<label for="collapse-v-2-2-0" aria-hidden="true">**2.2.0 / 25-September-2026**</label>
+<div>
+
+
+## Main changes
+
+Third official release of W25N01GVXX Part Drivers.
+
+## Contents
+
+- Update asynchronous data execution model to strictly non-blocking behavior and standardize status semantics.
+
+## Known limitations
+
+None.
+
+## Development toolchains and compilers
+
+- IAR Embedded Workbench for ARM (EWARM) toolchain V9.60.3 + ST-LINK.
+- MDK-ARM Keil uVision V5.42.
+- STM32CubeIDE for Visual Studio Code (GCC13 compiler).
+
+## Supported devices and boards
+
+All boards with native part support or integration through compatible expansion shields.
+
+## Backward compatibility
+
+None.
+
+## Dependencies
+
+STM32 HAL Drivers V2.y.z
+
+</div>
 
 <label for="collapse-v-2-1-0" aria-hidden="true">**2.1.0 / 12-June-2026**</label>
 <div>
